@@ -10,7 +10,7 @@ import java.util.concurrent.ThreadLocalRandom;
 @Slf4j
 public class HelloController {
 
-    @GetMapping("hi")
+    @GetMapping
     public String hi() {
         return "OMAE WA MOU SHINDE IRU";
     }
