@@ -27,7 +27,7 @@ public class ProducerController {
 
         var producers = Producer.getProducers();
         var producerGetResponseList = MAPPER.toProducerGetResponseList(producers);
-        if(name == null) return ResponseEntity.ok(producerGetResponseList);
+        if (name == null) return ResponseEntity.ok(producerGetResponseList);
 
         var response = producerGetResponseList.stream().filter(producer -> producer.getName().equalsIgnoreCase(name)).toList();
         return ResponseEntity.ok(response);
@@ -42,7 +42,8 @@ public class ProducerController {
                 .filter(producer -> producer.getId().equals(id))
                 .findFirst()
                 .map(MAPPER::toProducerGetResponse)
-                .orElse(null);
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Producer not found"));
+
         return ResponseEntity.ok(producerGetResponse);
     }
 

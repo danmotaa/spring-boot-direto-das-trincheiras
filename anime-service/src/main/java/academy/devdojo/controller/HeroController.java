@@ -18,6 +18,7 @@ public class HeroController {
     public List<String> listAllHeroesParam(@RequestParam(defaultValue = "") String name) {
         return HEROES.stream().filter(hero -> hero.equalsIgnoreCase(name)).toList();
     }
+
     @GetMapping("filterList")
     public List<String> listAllHeroesParamList(@RequestParam List<String> names) {
         return HEROES.stream().filter(names::contains).toList();
@@ -25,7 +26,7 @@ public class HeroController {
 
     @GetMapping("{name}")
     public String findByName(@PathVariable String name) {
-        return  HEROES
+        return HEROES
                 .stream()
                 .filter(hero -> hero.equalsIgnoreCase(name))
                 .findFirst().orElse("");

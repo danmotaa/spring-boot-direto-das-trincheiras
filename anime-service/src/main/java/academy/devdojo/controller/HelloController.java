@@ -18,6 +18,6 @@ public class HelloController {
     @PostMapping
     public Long save(@RequestBody String name) {
         log.info("save '{}'", name);
-        return ThreadLocalRandom.current().nextLong(1,1000);
+        return ThreadLocalRandom.current().nextLong(1, 1000);
     }
 }
