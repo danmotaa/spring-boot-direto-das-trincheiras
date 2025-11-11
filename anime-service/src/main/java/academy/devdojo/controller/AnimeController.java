@@ -3,6 +3,7 @@ package academy.devdojo.controller;
 import academy.devdojo.domain.Anime;
 import academy.devdojo.mapper.AnimeMapper;
 import academy.devdojo.request.AnimePostRequest;
+import academy.devdojo.request.AnimePutRequest;
 import academy.devdojo.response.AnimeGetResponse;
 import academy.devdojo.response.AnimePostResponse;
 import lombok.extern.slf4j.Slf4j;
@@ -27,10 +28,16 @@ public class AnimeController {
 
         var animes = Anime.getAnimes();
         var animeGetResponseList = MAPPER.toAnimeGetResponseList(animes);
-        if (name == null) return ResponseEntity.ok(animeGetResponseList);
+        if (name == null) {
+            return ResponseEntity.ok(animeGetResponseList);
+        }
+        else {
+            var response = animeGetResponseList
+                    .stream()
+                    .filter(anime -> anime.getName().equalsIgnoreCase(name)).toList();
+            return ResponseEntity.ok(response);
+        }
 
-        var response = animeGetResponseList.stream().filter(anime -> anime.getName().equalsIgnoreCase(name)).toList();
-        return ResponseEntity.ok(response);
     }
 
     @GetMapping("{id}")
@@ -70,6 +77,23 @@ public class AnimeController {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Anime not found"));
 
         Anime.getAnimes().remove(animeToDelete);
+        return ResponseEntity.noContent().build();
+    }
+
+    @PutMapping
+    public ResponseEntity<Void> update(@RequestBody AnimePutRequest request) {
+        log.debug("Request to update anime {}", request);
+
+        var animeToRemove = Anime.getAnimes()
+                .stream()
+                .filter(anime1 ->  anime1.getId().equals(request.getId()) )
+                .findFirst()
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Anime not found"));
+
+
+        var animeUpdated = MAPPER.toAnime(request);
+        Anime.getAnimes().remove(animeToRemove);
+        Anime.getAnimes().add(animeUpdated);
         return ResponseEntity.noContent().build();
     }
 }
