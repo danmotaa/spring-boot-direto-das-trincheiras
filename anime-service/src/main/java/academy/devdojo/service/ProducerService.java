@@ -33,10 +33,10 @@ public class ProducerService {
         repository.delete(producer);
     }
 
-    public void update(Producer producerToUpdate){
+    public void update(Producer producerToUpdate) {
         var producer = findByIdOrThrowNotFound(producerToUpdate.getId());
         producerToUpdate.setCreatedAt(producer.getCreatedAt());
-        repository.save(producer);
+        repository.update(producerToUpdate);
     }
 
 }
