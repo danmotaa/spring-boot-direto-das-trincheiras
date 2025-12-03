@@ -24,8 +24,8 @@ public class ProducerController {
 
     private final ProducerService service;
 
-    public ProducerController() {
-        this.service = new ProducerService();
+    public ProducerController(ProducerService service) {
+        this.service = service;
     }
 
     @GetMapping

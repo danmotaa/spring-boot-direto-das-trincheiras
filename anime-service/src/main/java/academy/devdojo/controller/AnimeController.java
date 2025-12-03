@@ -30,7 +30,6 @@ public class AnimeController {
     public ResponseEntity<List<AnimeGetResponse>> listAll(@RequestParam(required = false) String name) {
         log.debug("Request to get all Animes {}", name);
 
-
         var anime = service.getAll(name);
 
         var animeGetResponses = MAPPER.toAnimeGetResponseList(anime);
