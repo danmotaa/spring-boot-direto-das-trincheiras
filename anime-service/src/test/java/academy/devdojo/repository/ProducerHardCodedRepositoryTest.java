@@ -33,7 +33,6 @@ class ProducerHardCodedRepositoryTest {
         var studioGhibli = Producer.builder().id(3L).name("Studios Ghibli").createdAt(LocalDateTime.now()).build();
 
         producersList = new ArrayList<>(List.of(ufotable, witStudio, studioGhibli));
-
     }
 
     @Test

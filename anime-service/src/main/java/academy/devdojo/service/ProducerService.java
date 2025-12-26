@@ -15,7 +15,7 @@ public class ProducerService {
 
     private final ProducerHardCodedRepository repository;
 
-    public List<Producer> getAll(String name){
+    public List<Producer> findAll(String name){
         return name == null ? repository.findAll() : repository.findByName(name);
     }
 

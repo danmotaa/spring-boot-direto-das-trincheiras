@@ -32,7 +32,7 @@ public class ProducerController {
     public ResponseEntity<List<ProducerGetResponse>> listAll(@RequestParam(required = false) String name) {
         log.debug("Request to get all Producers {}", name);
 
-        var producers = service.getAll(name);
+        var producers = service.findAll(name);
 
         var producerGetResponses = MAPPER.toProducerGetResponseList(producers);
 
