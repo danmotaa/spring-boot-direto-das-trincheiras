@@ -2,13 +2,17 @@ package academy.devdojo.controller;
 
 import academy.devdojo.domain.Producer;
 import academy.devdojo.repository.ProducerData;
+import academy.devdojo.repository.ProducerHardCodedRepository;
 import org.junit.jupiter.api.*;
+import org.mockito.ArgumentMatchers;
 import org.mockito.BDDMockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.core.io.ResourceLoader;
+import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
+import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
@@ -29,6 +33,10 @@ class ProducerControllerTest {
     private MockMvc mockMvc;
     @MockitoBean
     private ProducerData producerData;
+
+    @MockitoSpyBean
+    private ProducerHardCodedRepository repository;
+
     private List<Producer> producerList;
     @Autowired
     private ResourceLoader resourceLoader;
@@ -113,12 +121,33 @@ class ProducerControllerTest {
     void findById_ThrowsResponseStatusException_WhenProducerIsNotFound() throws Exception {
 
         BDDMockito.when(producerData.getProducers()).thenReturn(producerList);
-        var response = readResourceFile("producer/get-producer-by-id-200.json");
         var id = 99L;
 
         mockMvc.perform(MockMvcRequestBuilders.get("/v1/producers/{id}", id))
                 .andDo(MockMvcResultHandlers.print())
                 .andExpect(MockMvcResultMatchers.status().isNotFound())
-                .andExpect(MockMvcResultMatchers.status().reason("Producer not Found"));
+                .andExpect(MockMvcResultMatchers.status().reason("Producer not found"));
     }
+    @Test
+    @DisplayName("POST v1/producers creates a producer")
+    @Order(6)
+    void save_CreatesProducers_WhenSuccessful() throws Exception {
+
+        var request = readResourceFile("producer/post-request-producer-200.json");
+        var response = readResourceFile("producer/post-response-producer-201.json");
+        var producerToSave = Producer.builder().id(99L).name("Mappa").createdAt(LocalDateTime.now()).build();
+
+        BDDMockito.when(repository.save(ArgumentMatchers.any())).thenReturn(producerToSave);
+
+        mockMvc.perform(MockMvcRequestBuilders
+                        .post("/v1/producers")
+                        .content(request)
+                        .header("x-api-key", "v1")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.status().isCreated())
+                .andExpect(MockMvcResultMatchers.content().json(response));
+    }
+
 }
