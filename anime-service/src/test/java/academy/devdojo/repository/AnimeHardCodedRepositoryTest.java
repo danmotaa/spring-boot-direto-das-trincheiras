@@ -1,5 +1,6 @@
 package academy.devdojo.repository;
 
+import academy.devdojo.commons.AnimeUtils;
 import academy.devdojo.domain.Anime;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.*;
@@ -9,7 +10,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @ExtendWith(MockitoExtension.class)
@@ -19,6 +19,9 @@ class AnimeHardCodedRepositoryTest {
     @InjectMocks
     private AnimeHardCodedRepository repository;
 
+    @InjectMocks
+    private AnimeUtils  animeUtils;
+
     @Mock
     private AnimeData animeData;
 
@@ -27,11 +30,7 @@ class AnimeHardCodedRepositoryTest {
     @BeforeEach
     void init() {
 
-        var shingeki = Anime.builder().id(1L).name("Attack On Titan").build();
-        var blackCover = Anime.builder().id(2L).name("Black Cover").build();
-        var gachiakuta = Anime.builder().id(3L).name("Gachiakuta").build();
-
-        animesList = new ArrayList<>(List.of(shingeki, blackCover, gachiakuta));
+        animesList = animeUtils.newAnimeList();
 
     }
 
@@ -86,7 +85,7 @@ class AnimeHardCodedRepositoryTest {
 
         BDDMockito.when(animeData.getAnimes()).thenReturn(animesList);
 
-        var animeToSave = Anime.builder().id(99L).name("Pokemon").build();
+        var animeToSave = animeUtils.newAnimeToSave();
         var anime = repository.save(animeToSave);
 
         Assertions.assertThat(anime).isEqualTo(animeToSave).hasNoNullFieldsOrProperties();
