@@ -4,6 +4,10 @@ spring:
   threads:
     virtual:
       enabled: true
+  datasource:
+    url: localhost:3306
+    username: devdojo
+    password: devdojo
 
 logging:
   level:

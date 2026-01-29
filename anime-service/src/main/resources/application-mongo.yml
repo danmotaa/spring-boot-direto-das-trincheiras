@@ -1,0 +1,5 @@
+spring:
+  datasource:
+    url: localhost:9999
+    username: devdojo
+    password: devdojo
